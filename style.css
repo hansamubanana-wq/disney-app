@@ -17,16 +17,37 @@ body {
     padding-bottom: 50px;
     -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
+    position: relative; /* パーティクル表示用 */
 }
 
-/* ▼▼▼ 新オープニング画面 ▼▼▼ */
+/* ▼▼▼ キラキラ（ピクシーダスト）エフェクト ▼▼▼ */
+.sparkle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    pointer-events: none; /* クリックを邪魔しない */
+    transform: translate(-50%, -50%);
+    animation: sparkle-anim 0.8s ease-out forwards;
+    box-shadow: 0 0 10px rgba(226, 192, 122, 0.8);
+    z-index: 9999;
+}
+
+@keyframes sparkle-anim {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+    50% { opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+}
+
+/* オープニング画面 */
 #splash-screen {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #050c18; /* より深い色 */
+    background-color: #050c18;
     z-index: 9999;
     display: flex;
     justify-content: center;
@@ -45,7 +66,6 @@ body {
     padding: 20px;
 }
 
-/* 日付 */
 .splash-date {
     font-family: 'Cinzel', serif;
     color: rgba(255, 255, 255, 0.7);
@@ -56,20 +76,18 @@ body {
     opacity: 0;
 }
 
-/* タイトル */
 .splash-title {
     font-family: 'Cinzel', serif;
     color: var(--accent-color);
     margin: 0 0 20px 0;
     font-size: 32px;
     text-shadow: 0 0 20px rgba(226, 192, 122, 0.3);
-    animation: fadeInUp 1s ease forwards 0.3s; /* 0.3秒遅れ */
+    animation: fadeInUp 1s ease forwards 0.3s;
     opacity: 0;
 }
 
-/* メンバー名（筆記体） */
 .splash-members {
-    font-family: 'Great Vibes', cursive; /* 筆記体フォント */
+    font-family: 'Great Vibes', cursive;
     color: #ffffff;
     font-size: 28px;
     line-height: 1.5;
@@ -77,7 +95,7 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     gap: 15px;
-    animation: fadeInUp 1s ease forwards 0.8s; /* 0.8秒遅れ */
+    animation: fadeInUp 1s ease forwards 0.8s;
     opacity: 0;
 }
 
@@ -86,7 +104,6 @@ body {
     text-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
 
-/* 読み込みバー */
 .loading-bar {
     width: 0%;
     height: 2px;
@@ -105,8 +122,6 @@ body {
     80% { width: 50%; opacity: 1; }
     100% { width: 100%; opacity: 0; }
 }
-/* ▲▲▲ ここまで ▲▲▲ */
-
 
 /* ヘッダー */
 .app-header {
@@ -191,7 +206,6 @@ body {
     width: 100%;
 }
 
-/* スクロールアニメーション */
 .scroll-trigger {
     opacity: 0;
     transform: translateY(30px);
@@ -233,12 +247,21 @@ body {
     filter: grayscale(80%);
 }
 
+/* ▼▼▼ 現在のカードの呼吸アニメーション ▼▼▼ */
 .time-card.current {
     border: 2px solid var(--accent-color);
     box-shadow: 0 0 20px rgba(226, 192, 122, 0.6);
     transform: scale(1.02);
     z-index: 10;
+    animation: pulse-glow 2s infinite ease-in-out;
 }
+
+@keyframes pulse-glow {
+    0% { box-shadow: 0 0 15px rgba(226, 192, 122, 0.4); }
+    50% { box-shadow: 0 0 30px rgba(226, 192, 122, 0.8); border-color: #fff; }
+    100% { box-shadow: 0 0 15px rgba(226, 192, 122, 0.4); }
+}
+/* ▲▲▲ ここまで ▲▲▲ */
 
 .time-card.completed {
     opacity: 0.4;
@@ -437,11 +460,11 @@ body {
     opacity: 0.8;
 }
 
-/* ▼▼▼ フッター ▼▼▼ */
+/* フッター */
 .app-footer {
     text-align: center;
     margin-top: 50px;
-    padding: 30px 10px 50px; /* 下に余裕を持たせる */
+    padding: 30px 10px 50px;
     border-top: 1px solid rgba(255,255,255,0.05);
 }
 
@@ -454,7 +477,7 @@ body {
 }
 
 .footer-members {
-    font-family: 'Great Vibes', cursive; /* 筆記体 */
+    font-family: 'Great Vibes', cursive;
     font-size: 24px;
     color: var(--accent-color);
     margin-bottom: 20px;
@@ -471,4 +494,3 @@ body {
     font-size: 10px;
     opacity: 0.4;
 }
-/* ▲▲▲ ここまで ▲▲▲ */
