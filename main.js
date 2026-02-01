@@ -44,11 +44,37 @@ function updateClock() {
     }
 }
 
+/* --- フィルターロジック --- */
+let currentFilter = 'all';
+
+function filterSchedule(type) {
+    currentFilter = type;
+    
+    const buttons = document.querySelectorAll('.filter-btn');
+    buttons.forEach(btn => {
+        if(btn.textContent.toLowerCase().includes(type) || (type === 'attraction' && btn.textContent === 'Ride')) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+
+    const cards = document.querySelectorAll('.timeline .time-card');
+    cards.forEach(card => {
+        const cardType = card.getAttribute('data-type');
+        if (type === 'all' || cardType === type) {
+            card.classList.remove('hidden');
+        } else {
+            card.classList.add('hidden');
+        }
+    });
+
+    updateTimeStatus();
+}
+
 // 時間管理機能（＆ナビバー更新）
 function updateTimeStatus() {
     const now = new Date();
-    // デバッグ時はここを解除
-    // now.setHours(10, 00); 
     
     const currentHours = now.getHours();
     const currentMinutes = now.getMinutes();
@@ -65,8 +91,7 @@ function updateTimeStatus() {
     let nextEventTime = "";
 
     cards.forEach((card) => {
-        // 完了済みはスキップして次を探す
-        if(card.classList.contains('completed')) return;
+        if(card.classList.contains('completed') || card.classList.contains('hidden')) return;
 
         const timeStr = card.getAttribute('data-time');
         const [h, m] = timeStr.split(':').map(Number);
@@ -74,21 +99,16 @@ function updateTimeStatus() {
         const eventName = card.querySelector('.event').textContent;
 
         if (currentTimeVal > cardTimeVal + 30) {
-            // 30分以上過ぎたイベント
             card.classList.add('past');
         } 
         else if (!foundCurrent) {
-            // これが「今」または「次」のイベント！
             card.classList.add('current');
             foundCurrent = true;
-            
-            // ナビバーに表示する内容をセット
             nextEventTitle = eventName;
             nextEventTime = timeStr;
         }
     });
 
-    // ナビバーの更新
     const navBar = document.getElementById('sticky-nav');
     const navTitle = document.getElementById('nav-title');
     const navTime = document.getElementById('nav-time');
@@ -98,20 +118,45 @@ function updateTimeStatus() {
         navTitle.textContent = nextEventTitle;
         navTime.textContent = nextEventTime;
     } else {
-        // 全部終わったら隠すか、「Finish」を表示
         navBar.classList.add('visible');
         navTitle.textContent = "All Schedules Completed";
         navTime.textContent = "Good Night";
     }
 }
 
-function toggleComplete(card, id) {
+// 完了切り替え＆演出
+function toggleComplete(card, id, event) {
     card.classList.toggle('completed');
     saveCompletionStatus();
     updateTimeStatus();
     
+    // 振動
     if (navigator.vibrate) {
         navigator.vibrate(50);
+    }
+
+    // ★★★ ここを追加：完了時にその場所から紙吹雪！ ★★★
+    if (card.classList.contains('completed')) {
+        // クリック位置を取得（スマホのタッチ対応）
+        let x = 0.5;
+        let y = 0.5;
+        
+        if (event) {
+            // 画面に対する相対座標(0.0〜1.0)に変換
+            x = event.clientX / window.innerWidth;
+            y = event.clientY / window.innerHeight;
+        }
+
+        // 紙吹雪発射
+        confetti({
+            particleCount: 30,
+            spread: 60,
+            origin: { x: x, y: y },
+            colors: ['#FFD700', '#FFFFFF', '#87CEFA'], // 金・白・青
+            disableForReducedMotion: true,
+            zIndex: 9999,
+            scalar: 0.8 // 少し小さめ
+        });
     }
 }
 
@@ -139,7 +184,7 @@ function loadCompletionStatus() {
     }
 }
 
-/* --- キラキラ演出 --- */
+/* --- キラキラ演出（背景タップ時） --- */
 function createSparkle(x, y) {
     const sparkle = document.createElement('div');
     sparkle.classList.add('sparkle');
@@ -190,8 +235,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. クリックイベント
     const cards = document.querySelectorAll('.time-card');
     cards.forEach((card, index) => {
-        card.addEventListener('click', () => {
-            toggleComplete(card, index);
+        card.addEventListener('click', (event) => {
+            toggleComplete(card, index, event); // eventを渡すように変更
         });
     });
 
@@ -199,10 +244,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const scrollTriggers = document.querySelectorAll('.scroll-trigger');
     scrollTriggers.forEach(el => observer.observe(el));
 
-    // キラキライベント
+    // キラキライベント（カード以外の場所をクリックした時用）
     document.addEventListener('click', (e) => {
+        // カードをクリックした時はtoggleCompleteが発火するので、ここでは何もしない判定を入れるとより良いが、
+        // 重なっても綺麗なのでそのままキラキラも出す
         createSparkle(e.pageX, e.pageY);
-        setTimeout(() => createSparkle(e.pageX + (Math.random()*30-15), e.pageY + (Math.random()*30-15)), 100);
     });
 });
 
