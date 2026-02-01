@@ -5,7 +5,7 @@
     --accent-color: #e2c07a;
     --card-bg: #162a47;
     --warning-color: #ff4757;
-    --success-color: #2ecc71; /* 完了用の緑色 */
+    --success-color: #2ecc71;
 }
 
 body {
@@ -15,9 +15,62 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     padding-bottom: 50px;
-    /* タップ時のハイライトを無効化（スマホ用） */
     -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden; /* 横揺れ防止 */
 }
+
+/* ▼▼▼ オープニング画面（スプラッシュ） ▼▼▼ */
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+/* 消えるときのクラス */
+#splash-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.splash-content {
+    text-align: center;
+    animation: pulse 2s infinite;
+}
+
+.castle-icon {
+    font-size: 60px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 20px rgba(226, 192, 122, 0.5);
+}
+
+.splash-title {
+    font-family: 'Cinzel', serif;
+    color: var(--accent-color);
+    margin: 0;
+    font-size: 28px;
+}
+
+.splash-text {
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+/* ▲▲▲ ここまでオープニング ▲▲▲ */
+
 
 /* ヘッダー */
 .app-header {
@@ -41,6 +94,18 @@ body {
     opacity: 0.8;
 }
 
+#realtime-clock {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    color: var(--text-color);
+    margin-top: 8px;
+    background: rgba(255,255,255,0.1);
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 12px;
+    letter-spacing: 1px;
+}
+
 /* タブメニュー */
 .tab-menu {
     display: flex;
@@ -51,6 +116,7 @@ body {
     z-index: 100;
     padding: 10px 0;
     border-bottom: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* 影を追加 */
 }
 
 .tab-btn {
@@ -73,16 +139,10 @@ body {
 .content-area {
     display: none;
     padding: 20px;
-    animation: fadeIn 0.5s ease;
 }
 
 .content-area.active {
     display: block;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
 }
 
 .section-title {
@@ -94,6 +154,20 @@ body {
     padding-bottom: 5px;
     width: 100%;
 }
+
+/* ▼▼▼ スクロールアニメーション用 ▼▼▼ */
+.scroll-trigger {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.scroll-trigger.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+/* ▲▲▲ ここまで ▲▲▲ */
+
 
 /* タイムライン */
 .timeline {
@@ -111,12 +185,16 @@ body {
     gap: 15px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     border-left: 4px solid transparent;
-    transition: all 0.3s;
-    position: relative; /* チェックマーク配置用 */
-    cursor: pointer; /* クリックできることを示す */
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* バネのような動き */
+    position: relative;
+    cursor: pointer;
 }
 
-/* 時間経過時のスタイル */
+/* タップしたときのアニメーション */
+.time-card:active {
+    transform: scale(0.95) !important;
+}
+
 .time-card.past {
     opacity: 0.5;
     filter: grayscale(80%);
@@ -124,19 +202,25 @@ body {
 
 .time-card.current {
     border: 2px solid var(--accent-color);
-    box-shadow: 0 0 15px rgba(226, 192, 122, 0.5);
+    box-shadow: 0 0 20px rgba(226, 192, 122, 0.6);
     transform: scale(1.02);
+    z-index: 10; /* 他より手前に */
 }
 
-/* ▼▼▼ 追加：完了（Completed）スタイル ▼▼▼ */
 .time-card.completed {
     opacity: 0.4;
     filter: grayscale(100%);
     background-color: #0d1b2e;
-    text-decoration: line-through; /* 取り消し線 */
+    text-decoration: line-through;
+    /* 完了時のフラッシュアニメーション */
+    animation: flash 0.5s ease;
 }
 
-/* 完了マーク（チェックアイコン） */
+@keyframes flash {
+    0% { background-color: var(--success-color); opacity: 1; filter: none; }
+    100% { background-color: #0d1b2e; opacity: 0.4; }
+}
+
 .time-card.completed::after {
     content: '✔';
     position: absolute;
@@ -151,12 +235,16 @@ body {
     line-height: 24px;
     font-size: 14px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-    text-decoration: none; /* チェックマークには線を出さない */
+    text-decoration: none;
+    animation: popIn 0.3s ease;
 }
-/* ▲▲▲ ここまで追加 ▲▲▲ */
 
+@keyframes popIn {
+    0% { transform: scale(0); }
+    80% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
 
-/* カードの装飾 */
 .time-card.warning {
     border-left-color: var(--warning-color);
     background: linear-gradient(90deg, rgba(255, 71, 87, 0.1), transparent);

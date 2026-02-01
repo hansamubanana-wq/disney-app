@@ -1,3 +1,20 @@
+// スクロールアニメーション監視用
+const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1 // 10%見えたらアニメーション開始
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            // 一度表示されたら監視をやめる（パフォーマンス向上）
+            observer.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
 function switchTab(tabName) {
     const contents = document.querySelectorAll('.content-area');
     contents.forEach(content => {
@@ -17,11 +34,21 @@ function switchTab(tabName) {
     }
 }
 
+// リアルタイム時計更新
+function updateClock() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const clockEl = document.getElementById('realtime-clock');
+    if (clockEl) {
+        clockEl.textContent = `${hours}:${minutes}`;
+    }
+}
+
 // 時間管理機能
 function updateTimeStatus() {
     const now = new Date();
-    // デバッグ用: 時間を変えたい場合はここをいじる
-    // now.setHours(10, 00); 
+    // now.setHours(10, 00); // デバッグ用
 
     const currentHours = now.getHours();
     const currentMinutes = now.getMinutes();
@@ -29,17 +56,13 @@ function updateTimeStatus() {
 
     const cards = document.querySelectorAll('.time-card[data-time]');
     
-    // 完了済みのものは時間管理のスタイル（past/current）を適用しないように制御するため
-    // ここでは単純にpast/currentのリセットだけ行う
     cards.forEach(card => {
         card.classList.remove('past', 'current');
     });
 
     let foundCurrent = false;
 
-    cards.forEach((card, index) => {
-        // すでに完了(completed)しているものは、時間判定をスキップしてOK
-        // （完了スタイルを優先するため）
+    cards.forEach((card) => {
         if(card.classList.contains('completed')) return;
 
         const timeStr = card.getAttribute('data-time');
@@ -56,40 +79,33 @@ function updateTimeStatus() {
     });
 }
 
-// 完了状態の切り替えと保存
 function toggleComplete(card, id) {
-    // 完了クラスを付け外し（トグル）
     card.classList.toggle('completed');
-
-    // 完了リストを保存
     saveCompletionStatus();
-
-    // 時間スタイルを再計算（完了したものをcurrentから外すため）
     updateTimeStatus();
+    
+    // 完了時に一瞬振動させる（スマホでのフィードバック）
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
 }
 
-// LocalStorageに保存する
 function saveCompletionStatus() {
     const completedIndices = [];
     const cards = document.querySelectorAll('.time-card');
-    
     cards.forEach((card, index) => {
         if (card.classList.contains('completed')) {
             completedIndices.push(index);
         }
     });
-
-    // 配列を文字列にして保存
     localStorage.setItem('disneyAppCompleted', JSON.stringify(completedIndices));
 }
 
-// LocalStorageから読み込む
 function loadCompletionStatus() {
     const saved = localStorage.getItem('disneyAppCompleted');
     if (saved) {
         const completedIndices = JSON.parse(saved);
         const cards = document.querySelectorAll('.time-card');
-        
         completedIndices.forEach(index => {
             if (cards[index]) {
                 cards[index].classList.add('completed');
@@ -98,20 +114,40 @@ function loadCompletionStatus() {
     }
 }
 
-// 初期化処理
+// ページ読み込み時に実行
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. 保存されたデータを復元
+    // 1. スプラッシュ画面を2秒後に消す
+    setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if(splash) {
+            splash.classList.add('hidden');
+            // アニメーション完了後に要素を完全に消す（誤操作防止）
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 500);
+        }
+    }, 1500); // 1.5秒表示
+
+    // 2. 完了データの復元
     loadCompletionStatus();
 
-    // 2. 時間の表示を更新
+    // 3. 時間の更新開始
     updateTimeStatus();
-    setInterval(updateTimeStatus, 60000);
+    updateClock();
+    setInterval(() => {
+        updateTimeStatus();
+        updateClock();
+    }, 60000); // 1分更新（時間は秒まで表示しないのでこれでOK）
 
-    // 3. クリックイベントを全カードに付与
+    // 4. クリックイベント
     const cards = document.querySelectorAll('.time-card');
     cards.forEach((card, index) => {
         card.addEventListener('click', () => {
             toggleComplete(card, index);
         });
     });
+
+    // 5. スクロール監視の開始
+    const scrollTriggers = document.querySelectorAll('.scroll-trigger');
+    scrollTriggers.forEach(el => observer.observe(el));
 });
