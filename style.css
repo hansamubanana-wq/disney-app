@@ -287,7 +287,7 @@ body {
     flex-wrap: wrap;
 }
 
-/* Map & Food (更新) */
+/* Map & Food */
 .map-container {
     text-align: center;
     margin-bottom: 30px;
@@ -305,10 +305,10 @@ body {
 
 .map-frame {
     width: 100%;
-    height: 60vh; /* 画面の高さの60% */
+    height: 60vh;
     border: none;
     border-radius: 8px;
-    background-color: #fff; /* PDF背景用 */
+    background-color: #fff;
 }
 
 .official-btn {

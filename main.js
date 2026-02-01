@@ -121,12 +121,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const splash = document.getElementById('splash-screen');
         if(splash) {
             splash.classList.add('hidden');
-            // アニメーション完了後に要素を完全に消す（誤操作防止）
             setTimeout(() => {
                 splash.style.display = 'none';
             }, 500);
         }
-    }, 1500); // 1.5秒表示
+    }, 1500);
 
     // 2. 完了データの復元
     loadCompletionStatus();
@@ -137,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(() => {
         updateTimeStatus();
         updateClock();
-    }, 60000); // 1分更新（時間は秒まで表示しないのでこれでOK）
+    }, 60000);
 
     // 4. クリックイベント
     const cards = document.querySelectorAll('.time-card');
@@ -151,3 +150,70 @@ document.addEventListener('DOMContentLoaded', () => {
     const scrollTriggers = document.querySelectorAll('.scroll-trigger');
     scrollTriggers.forEach(el => observer.observe(el));
 });
+
+/* --- 最後の魔法：隠し花火機能 --- */
+document.addEventListener('DOMContentLoaded', () => {
+    const title = document.querySelector('.app-header h1');
+    let clickCount = 0;
+    let clickTimer = null;
+
+    if (title) {
+        // タイトルがクリック（タップ）できることを視覚的に分からないようにする
+        title.style.cursor = 'default';
+        title.style.userSelect = 'none';
+
+        title.addEventListener('click', (e) => {
+            // タップ時の拡大アニメーション
+            title.style.transform = 'scale(0.95)';
+            setTimeout(() => title.style.transform = 'scale(1)', 100);
+
+            clickCount++;
+
+            // 2秒間操作がなかったらカウントリセット
+            clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => {
+                clickCount = 0;
+            }, 2000);
+
+            // 5回連打で発動！
+            if (clickCount === 5) {
+                launchFireworks();
+                clickCount = 0; // リセット
+            }
+        });
+    }
+});
+
+function launchFireworks() {
+    // 豪華な花火演出
+    const duration = 3000; // 3秒間
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+    function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    const interval = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+            return clearInterval(interval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+        
+        // 左右から打ち上げ
+        confetti(Object.assign({}, defaults, { 
+            particleCount, 
+            origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } 
+        }));
+        confetti(Object.assign({}, defaults, { 
+            particleCount, 
+            origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } 
+        }));
+    }, 250);
+    
+    // スマホを振動させる（対応機種のみ）
+    if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
+}
