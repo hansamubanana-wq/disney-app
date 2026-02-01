@@ -2,14 +2,13 @@
 const observerOptions = {
     root: null,
     rootMargin: '0px',
-    threshold: 0.1 // 10%見えたらアニメーション開始
+    threshold: 0.1
 };
 
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.classList.add('visible');
-            // 一度表示されたら監視をやめる（パフォーマンス向上）
             observer.unobserve(entry.target);
         }
     });
@@ -48,8 +47,7 @@ function updateClock() {
 // 時間管理機能
 function updateTimeStatus() {
     const now = new Date();
-    // now.setHours(10, 00); // デバッグ用
-
+    
     const currentHours = now.getHours();
     const currentMinutes = now.getMinutes();
     const currentTimeVal = currentHours * 60 + currentMinutes;
@@ -84,7 +82,6 @@ function toggleComplete(card, id) {
     saveCompletionStatus();
     updateTimeStatus();
     
-    // 完了時に一瞬振動させる（スマホでのフィードバック）
     if (navigator.vibrate) {
         navigator.vibrate(50);
     }
@@ -116,16 +113,16 @@ function loadCompletionStatus() {
 
 // ページ読み込み時に実行
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. スプラッシュ画面を2秒後に消す
+    // 1. スプラッシュ画面を長めに表示（名前を読ませるため3秒に変更）
     setTimeout(() => {
         const splash = document.getElementById('splash-screen');
         if(splash) {
             splash.classList.add('hidden');
             setTimeout(() => {
                 splash.style.display = 'none';
-            }, 500);
+            }, 800); // フェードアウトの時間に合わせる
         }
-    }, 1500);
+    }, 3000); // ★ここを3秒に変更しました
 
     // 2. 完了データの復元
     loadCompletionStatus();
@@ -158,35 +155,30 @@ document.addEventListener('DOMContentLoaded', () => {
     let clickTimer = null;
 
     if (title) {
-        // タイトルがクリック（タップ）できることを視覚的に分からないようにする
         title.style.cursor = 'default';
         title.style.userSelect = 'none';
 
         title.addEventListener('click', (e) => {
-            // タップ時の拡大アニメーション
             title.style.transform = 'scale(0.95)';
             setTimeout(() => title.style.transform = 'scale(1)', 100);
 
             clickCount++;
 
-            // 2秒間操作がなかったらカウントリセット
             clearTimeout(clickTimer);
             clickTimer = setTimeout(() => {
                 clickCount = 0;
             }, 2000);
 
-            // 5回連打で発動！
             if (clickCount === 5) {
                 launchFireworks();
-                clickCount = 0; // リセット
+                clickCount = 0;
             }
         });
     }
 });
 
 function launchFireworks() {
-    // 豪華な花火演出
-    const duration = 3000; // 3秒間
+    const duration = 3000; 
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
 
@@ -203,7 +195,6 @@ function launchFireworks() {
 
         const particleCount = 50 * (timeLeft / duration);
         
-        // 左右から打ち上げ
         confetti(Object.assign({}, defaults, { 
             particleCount, 
             origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } 
@@ -214,6 +205,5 @@ function launchFireworks() {
         }));
     }, 250);
     
-    // スマホを振動させる（対応機種のみ）
     if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
 }
