@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disneyland Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="app-header">
+        <h1>Tokyo Disneyland</h1>
+        <p class="subtitle">Travel Guide</p>
+    </header>
+
+    <nav class="tab-menu">
+        <button class="tab-btn active" onclick="switchTab('schedule')">Schedule</button>
+        <button class="tab-btn" onclick="switchTab('map')">Map & Food</button>
+    </nav>
+
+    <main>
+        <section id="schedule" class="content-area active">
+            <h2 class="section-title">Time Schedule</h2>
+            
+            <div class="timeline">
+                <div class="time-card warning">
+                    <div class="time">7:33</div>
+                    <div class="event">舞浜集合 <span class="tag">遅刻厳禁</span></div>
+                    <div class="note">PS: ビッグサンダー / エントリー: クラビ・マジミュ</div>
+                </div>
+
+                <div class="time-card">
+                    <div class="time">9:05</div>
+                    <div class="event">インパ予定</div>
+                </div>
+
+                <div class="time-card highlight">
+                    <div class="time">9:15</div>
+                    <div class="event">美女と野獣 (SB 70分) 🔔</div>
+                </div>
+
+                <div class="time-card food">
+                    <div class="time">10:45</div>
+                    <div class="event">トゥモローランドテラス (30分目安) 🍔</div>
+                </div>
+
+                <div class="time-card food">
+                    <div class="time">11:20</div>
+                    <div class="event">ビッグポップ (20分) 🍿</div>
+                </div>
+
+                <div class="time-card">
+                    <div class="time">11:40</div>
+                    <div class="event">ベイマックス (SB 50-60分)</div>
+                </div>
+
+                <div class="time-card">
+                    <div class="time">12:50</div>
+                    <div class="event">アリスのティーパーティー (SB 5分) 🐰</div>
+                </div>
+
+                <div class="time-card">
+                    <div class="time">13:00</div>
+                    <div class="event">イッツ・ア・スモールワールド (SB 10分)</div>
+                </div>
+
+                <div class="time-card">
+                    <div class="time">13:30</div>
+                    <div class="event">フィルハーマジック (SB 10分)</div>
+                </div>
+
+                <div class="time-card">
+                    <div class="time">14:05</div>
+                    <div class="event">ビーバーブラザーズのカヌー (SB 15分) 🛶</div>
+                </div>
+
+                <div class="time-card highlight">
+                    <div class="time">14:30</div>
+                    <div class="event">ビッグサンダー・マウンテン (PS) 🚂</div>
+                </div>
+
+                <div class="time-card">
+                    <div class="time">15:00</div>
+                    <div class="event">白雪姫 (SB 15分)</div>
+                </div>
+
+                <div class="time-card">
+                    <div class="time">15:30</div>
+                    <div class="event">ロジャーラビット (SB 15分)</div>
+                </div>
+
+                <div class="time-card">
+                    <div class="time">15:50</div>
+                    <div class="event">ガジェットのゴーコースター (SB 10分)</div>
+                </div>
+
+                <div class="time-card">
+                    <div class="time">16:00</div>
+                    <div class="event">ミニーのスタイルスタジオ (SB 10分) 🎀</div>
+                </div>
+
+                <div class="time-card">
+                    <div class="time">16:20</div>
+                    <div class="event">モンスターズ・インク (SB 50-60分) 🔦</div>
+                </div>
+
+                <div class="time-card">
+                    <div class="time">17:30</div>
+                    <div class="event">カリブの海賊 (SB 10分)</div>
+                </div>
+
+                <div class="time-card highlight">
+                    <div class="time">18:00</div>
+                    <div class="event">リーチ・フォー・ザ・スターズ (30分) ⭐️</div>
+                </div>
+
+                <div class="time-card food">
+                    <div class="time">18:35</div>
+                    <div class="event">リフレッシュメントコーナー 🌭</div>
+                </div>
+
+                <div class="time-card">
+                    <div class="time">19:15</div>
+                    <div class="event">ビッグサンダー・マウンテン (SB 40-50分)</div>
+                </div>
+
+                <div class="time-card">
+                    <div class="time">20:10</div>
+                    <div class="event">プーさんのハニーハント (SB 20-30分) 🍯</div>
+                </div>
+
+                <div class="time-card">
+                    <div class="time">20:45</div>
+                    <div class="event">ワールドバザール買い物 🛍️</div>
+                </div>
+
+                <div class="time-card">
+                    <div class="time">21:00</div>
+                    <div class="event">アウトパーク (退園) 👋</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="map" class="content-area">
+            <h2 class="section-title">Map & Food</h2>
+            <div class="info-box">
+                <p>現在地やフード情報は現地で確認！</p>
+                <p>公式アプリへのリンクなどをここに置くと便利です。</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="main.js"></script>
+</body>
+</html>
