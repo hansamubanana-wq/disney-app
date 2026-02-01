@@ -1,10 +1,10 @@
 /* 全体の設定 */
 :root {
-    /* グラデーション背景に変更 */
+    /* グラデーション背景 */
     --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
     --text-color: #ffffff;
-    --accent-color: #ffd700; /* より明るいゴールド */
-    /* ガラスモーフィズム用の設定 */
+    --accent-color: #ffd700;
+    /* ガラスモーフィズム設定 */
     --glass-bg: rgba(255, 255, 255, 0.1);
     --glass-border: 1px solid rgba(255, 255, 255, 0.18);
     --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
@@ -17,18 +17,17 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Zen Kaku Gothic New', sans-serif;
-    /* 魔法のようなグラデーション背景 */
     background: var(--bg-gradient);
-    background-attachment: fixed; /* スクロールしても背景固定 */
+    background-attachment: fixed;
     color: var(--text-color);
-    padding-bottom: 50px;
+    padding-bottom: 120px; /* ナビバー用に余白を増やす */
     -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
     position: relative;
     min-height: 100vh;
 }
 
-/* 背景にうっすら光を回す装飾 */
+/* 背景装飾 */
 .bg-decoration {
     position: fixed;
     top: -50%;
@@ -47,7 +46,7 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-/* ▼▼▼ キラキラ（ピクシーダスト）エフェクト ▼▼▼ */
+/* キラキラエフェクト */
 .sparkle {
     position: absolute;
     width: 8px;
@@ -74,7 +73,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, #000428, #004e92); /* 深海のような青 */
+    background: linear-gradient(to bottom, #000428, #004e92);
     z-index: 9999;
     display: flex;
     justify-content: center;
@@ -94,7 +93,6 @@ body {
     position: relative;
 }
 
-/* メンバー名の周りに光の輪 */
 .splash-content::before {
     content: '';
     position: absolute;
@@ -176,7 +174,6 @@ body {
 .app-header {
     text-align: center;
     padding: 25px 0;
-    /* ガラス風ヘッダー */
     background: rgba(15, 12, 41, 0.7);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -293,10 +290,9 @@ body {
 .timeline {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* 間隔を少し広げて優雅に */
+    gap: 20px;
 }
 
-/* ▼▼▼ カードのガラスデザイン化 ▼▼▼ */
 .time-card {
     background: var(--glass-bg);
     backdrop-filter: blur(8px);
@@ -311,10 +307,9 @@ body {
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     cursor: pointer;
-    overflow: hidden; /* 光のエフェクト用 */
+    overflow: hidden;
 }
 
-/* カードにうっすら光沢を入れる */
 .time-card::before {
     content: '';
     position: absolute;
@@ -336,10 +331,9 @@ body {
     background: rgba(0, 0, 0, 0.3);
 }
 
-/* ▼▼▼ 現在のカード（豪華版） ▼▼▼ */
 .time-card.current {
     border: 1px solid var(--accent-color);
-    background: rgba(255, 215, 0, 0.1); /* ゴールドの薄い背景 */
+    background: rgba(255, 215, 0, 0.1);
     box-shadow: 0 0 25px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.2);
     transform: scale(1.03);
     z-index: 10;
@@ -445,6 +439,10 @@ body {
     border-radius: 16px;
     border: var(--glass-border);
     box-shadow: var(--glass-shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .map-note {
@@ -459,6 +457,15 @@ body {
     border: none;
     border-radius: 8px;
     background-color: #fff;
+    /* スマホではデフォルト非表示 */
+    display: none;
+}
+
+/* PCなど大画面では表示する設定 */
+@media screen and (min-width: 768px) {
+    .map-frame {
+        display: block;
+    }
 }
 
 .official-btn {
@@ -466,22 +473,23 @@ body {
     background: linear-gradient(45deg, #FFD700, #FDB931);
     color: #333;
     text-decoration: none;
-    padding: 12px 30px;
+    padding: 15px 30px; /* ボタンを大きく */
     border-radius: 30px;
     font-weight: bold;
     margin-top: 15px;
     box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
     transition: transform 0.2s;
     font-family: 'Cinzel', serif;
+    font-size: 16px;
 }
 
 .official-btn.small-btn {
-    font-size: 12px;
-    padding: 8px 20px;
-    background: transparent;
-    border: 1px solid var(--accent-color);
-    color: var(--accent-color);
-    box-shadow: none;
+    /* メインボタンとして扱うためスタイルを強化 */
+    font-size: 16px;
+    padding: 15px 40px;
+    background: linear-gradient(45deg, #FFD700, #FDB931);
+    border: none;
+    color: #000;
 }
 
 .official-btn:active {
@@ -560,7 +568,6 @@ body {
     text-align: center;
     margin-top: 60px;
     padding: 40px 10px 60px;
-    /* ガラス風フッター */
     background: rgba(0, 0, 0, 0.2);
     border-top: 1px solid rgba(255,255,255,0.05);
 }
@@ -593,3 +600,65 @@ body {
     opacity: 0.5;
     letter-spacing: 1px;
 }
+
+/* ▼▼▼ 新機能：フローティングナビバー ▼▼▼ */
+.sticky-nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px); /* 最初は隠す */
+    width: 90%;
+    max-width: 400px;
+    background: rgba(15, 12, 41, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 50px;
+    padding: 15px 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.sticky-nav.visible {
+    transform: translateX(-50%) translateY(0);
+}
+
+.nav-label {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
+
+.nav-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-title {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    color: var(--accent-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.nav-time {
+    font-family: 'Cinzel', serif;
+    font-weight: bold;
+    font-size: 16px;
+    color: #fff;
+    margin-left: 10px;
+    padding-left: 10px;
+    border-left: 1px solid rgba(255,255,255,0.2);
+}
+/* ▲▲▲ ここまで ▲▲▲ */

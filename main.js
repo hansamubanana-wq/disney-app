@@ -44,9 +44,11 @@ function updateClock() {
     }
 }
 
-// 時間管理機能
+// 時間管理機能（＆ナビバー更新）
 function updateTimeStatus() {
     const now = new Date();
+    // デバッグ時はここを解除
+    // now.setHours(10, 00); 
     
     const currentHours = now.getHours();
     const currentMinutes = now.getMinutes();
@@ -59,22 +61,48 @@ function updateTimeStatus() {
     });
 
     let foundCurrent = false;
+    let nextEventTitle = "Finish!";
+    let nextEventTime = "";
 
     cards.forEach((card) => {
+        // 完了済みはスキップして次を探す
         if(card.classList.contains('completed')) return;
 
         const timeStr = card.getAttribute('data-time');
         const [h, m] = timeStr.split(':').map(Number);
         const cardTimeVal = h * 60 + m;
+        const eventName = card.querySelector('.event').textContent;
 
         if (currentTimeVal > cardTimeVal + 30) {
+            // 30分以上過ぎたイベント
             card.classList.add('past');
         } 
         else if (!foundCurrent) {
+            // これが「今」または「次」のイベント！
             card.classList.add('current');
             foundCurrent = true;
+            
+            // ナビバーに表示する内容をセット
+            nextEventTitle = eventName;
+            nextEventTime = timeStr;
         }
     });
+
+    // ナビバーの更新
+    const navBar = document.getElementById('sticky-nav');
+    const navTitle = document.getElementById('nav-title');
+    const navTime = document.getElementById('nav-time');
+
+    if (foundCurrent) {
+        navBar.classList.add('visible');
+        navTitle.textContent = nextEventTitle;
+        navTime.textContent = nextEventTime;
+    } else {
+        // 全部終わったら隠すか、「Finish」を表示
+        navBar.classList.add('visible');
+        navTitle.textContent = "All Schedules Completed";
+        navTime.textContent = "Good Night";
+    }
 }
 
 function toggleComplete(card, id) {
@@ -111,19 +139,18 @@ function loadCompletionStatus() {
     }
 }
 
-/* --- ▼▼▼ 新機能：カラフルな魔法の粉（キラキラ）演出 ▼▼▼ --- */
+/* --- キラキラ演出 --- */
 function createSparkle(x, y) {
     const sparkle = document.createElement('div');
     sparkle.classList.add('sparkle');
     sparkle.style.left = `${x}px`;
     sparkle.style.top = `${y}px`;
     
-    // ランダムな大きさと色（夢の国カラー）
-    const size = Math.random() * 6 + 4; // 4px〜10px
+    const size = Math.random() * 6 + 4; 
     sparkle.style.width = `${size}px`;
     sparkle.style.height = `${size}px`;
     
-    const colors = ['#FFD700', '#FFFFFF', '#87CEFA', '#FFB6C1', '#E6E6FA']; // 金, 白, 水色, ピンク, ラベンダー
+    const colors = ['#FFD700', '#FFFFFF', '#87CEFA', '#FFB6C1', '#E6E6FA'];
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
     sparkle.style.backgroundColor = randomColor;
     sparkle.style.boxShadow = `0 0 10px ${randomColor}`;
@@ -134,7 +161,6 @@ function createSparkle(x, y) {
         sparkle.remove();
     }, 1000);
 }
-/* --- ▲▲▲ ここまで ▲▲▲ --- */
 
 
 // ページ読み込み時に実行
@@ -173,14 +199,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const scrollTriggers = document.querySelectorAll('.scroll-trigger');
     scrollTriggers.forEach(el => observer.observe(el));
 
-    /* --- ▼▼▼ キラキライベントの登録 ▼▼▼ --- */
+    // キラキライベント
     document.addEventListener('click', (e) => {
         createSparkle(e.pageX, e.pageY);
         setTimeout(() => createSparkle(e.pageX + (Math.random()*30-15), e.pageY + (Math.random()*30-15)), 100);
     });
 });
 
-/* --- 最後の魔法：隠し花火機能 --- */
+/* --- 隠し花火 --- */
 document.addEventListener('DOMContentLoaded', () => {
     const title = document.querySelector('.app-header h1');
     let clickCount = 0;
