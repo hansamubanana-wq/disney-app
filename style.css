@@ -1,8 +1,8 @@
 /* 全体の設定 */
 :root {
-    --bg-color: #0a1930; /* 参考資料のような濃いネイビー */
+    --bg-color: #0a1930;
     --text-color: #ffffff;
-    --accent-color: #e2c07a; /* エレガントなゴールド */
+    --accent-color: #e2c07a;
     --card-bg: #162a47;
     --warning-color: #ff4757;
 }
@@ -13,7 +13,7 @@ body {
     font-family: 'Zen Kaku Gothic New', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
-    padding-bottom: 50px; /* 下部の余白 */
+    padding-bottom: 50px;
 }
 
 /* ヘッダー */
@@ -68,13 +68,13 @@ body {
 
 /* コンテンツエリア */
 .content-area {
-    display: none; /* デフォルトは非表示 */
+    display: none;
     padding: 20px;
     animation: fadeIn 0.5s ease;
 }
 
 .content-area.active {
-    display: block; /* activeがつくと表示 */
+    display: block;
 }
 
 @keyframes fadeIn {
@@ -92,7 +92,7 @@ body {
     width: 100%;
 }
 
-/* タイムライン（スケジュール表） */
+/* タイムライン */
 .timeline {
     display: flex;
     flex-direction: column;
@@ -108,9 +108,22 @@ body {
     gap: 15px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     border-left: 4px solid transparent;
+    transition: all 0.3s; /* アニメーション用 */
 }
 
-/* 特別なカードの装飾 */
+/* 時間経過時のスタイル（追加） */
+.time-card.past {
+    opacity: 0.5;
+    filter: grayscale(80%);
+}
+
+.time-card.current {
+    border: 2px solid var(--accent-color);
+    box-shadow: 0 0 15px rgba(226, 192, 122, 0.5);
+    transform: scale(1.02);
+}
+
+/* カードの装飾 */
 .time-card.warning {
     border-left-color: var(--warning-color);
     background: linear-gradient(90deg, rgba(255, 71, 87, 0.1), transparent);
@@ -121,7 +134,7 @@ body {
 }
 
 .time-card.food {
-    border-left-color: #2ecc71; /* 緑色 */
+    border-left-color: #2ecc71;
 }
 
 .time {
@@ -156,14 +169,11 @@ body {
     vertical-align: middle;
 }
 
-/* フレックスボックスの調整 */
 .time-card.warning {
     flex-wrap: wrap;
 }
 
-/* --- Map & Food タブ用スタイル --- */
-
-/* 公式マップボタン */
+/* Map & Food */
 .map-link-area {
     text-align: center;
     margin-bottom: 30px;
@@ -197,7 +207,6 @@ body {
     margin-bottom: 15px;
 }
 
-/* フードリスト */
 .food-list {
     display: flex;
     flex-direction: column;
