@@ -156,7 +156,96 @@ body {
     vertical-align: middle;
 }
 
-/* フレックスボックスの調整（noteがある場合） */
+/* フレックスボックスの調整 */
 .time-card.warning {
     flex-wrap: wrap;
+}
+
+/* --- Map & Food タブ用スタイル --- */
+
+/* 公式マップボタン */
+.map-link-area {
+    text-align: center;
+    margin-bottom: 30px;
+    background: rgba(255,255,255,0.05);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.official-btn {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-weight: bold;
+    margin-top: 10px;
+    box-shadow: 0 4px 10px rgba(226, 192, 122, 0.3);
+    transition: transform 0.2s;
+}
+
+.official-btn:active {
+    transform: scale(0.95);
+}
+
+.sub-title {
+    font-family: 'Cinzel', serif;
+    color: var(--text-color);
+    border-left: 4px solid var(--accent-color);
+    padding-left: 10px;
+    margin-bottom: 15px;
+}
+
+/* フードリスト */
+.food-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.food-card {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.food-card.shopping {
+    border: 1px solid rgba(255, 100, 100, 0.3);
+}
+
+.food-icon {
+    font-size: 30px;
+    background: rgba(0,0,0,0.2);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.food-info h4 {
+    margin: 0 0 5px 0;
+    color: var(--accent-color);
+    font-size: 16px;
+}
+
+.time-badge {
+    display: inline-block;
+    background-color: rgba(255,255,255,0.1);
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin: 0 0 5px 0;
+}
+
+.desc {
+    margin: 0;
+    font-size: 13px;
+    opacity: 0.8;
 }
