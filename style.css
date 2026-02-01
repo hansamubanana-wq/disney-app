@@ -1,10 +1,15 @@
 /* 全体の設定 */
 :root {
-    --bg-color: #0a1930;
+    /* グラデーション背景に変更 */
+    --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
     --text-color: #ffffff;
-    --accent-color: #e2c07a;
-    --card-bg: #162a47;
-    --warning-color: #ff4757;
+    --accent-color: #ffd700; /* より明るいゴールド */
+    /* ガラスモーフィズム用の設定 */
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.18);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    
+    --warning-color: #ff6b81;
     --success-color: #2ecc71;
 }
 
@@ -12,32 +17,54 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Zen Kaku Gothic New', sans-serif;
-    background-color: var(--bg-color);
+    /* 魔法のようなグラデーション背景 */
+    background: var(--bg-gradient);
+    background-attachment: fixed; /* スクロールしても背景固定 */
     color: var(--text-color);
     padding-bottom: 50px;
     -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
-    position: relative; /* パーティクル表示用 */
+    position: relative;
+    min-height: 100vh;
+}
+
+/* 背景にうっすら光を回す装飾 */
+.bg-decoration {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 10%, transparent 20%);
+    background-size: 50px 50px;
+    animation: bg-move 60s linear infinite;
+    z-index: -1;
+    pointer-events: none;
+}
+
+@keyframes bg-move {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* ▼▼▼ キラキラ（ピクシーダスト）エフェクト ▼▼▼ */
 .sparkle {
     position: absolute;
-    width: 6px;
-    height: 6px;
-    background-color: var(--accent-color);
+    width: 8px;
+    height: 8px;
+    background-color: #fff;
     border-radius: 50%;
-    pointer-events: none; /* クリックを邪魔しない */
+    pointer-events: none;
     transform: translate(-50%, -50%);
-    animation: sparkle-anim 0.8s ease-out forwards;
-    box-shadow: 0 0 10px rgba(226, 192, 122, 0.8);
+    animation: sparkle-anim 1s ease-out forwards;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
     z-index: 9999;
 }
 
 @keyframes sparkle-anim {
-    0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+    0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 1; }
     50% { opacity: 1; }
-    100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(2) rotate(180deg); opacity: 0; }
 }
 
 /* オープニング画面 */
@@ -47,12 +74,12 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #050c18;
+    background: linear-gradient(to bottom, #000428, #004e92); /* 深海のような青 */
     z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: opacity 0.8s ease, visibility 0.8s ease;
+    transition: opacity 1s ease, visibility 1s ease;
 }
 
 #splash-screen.hidden {
@@ -64,14 +91,35 @@ body {
     text-align: center;
     width: 100%;
     padding: 20px;
+    position: relative;
+}
+
+/* メンバー名の周りに光の輪 */
+.splash-content::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255,215,0,0.2) 0%, transparent 70%);
+    z-index: -1;
+    animation: pulse-slow 3s infinite;
+}
+
+@keyframes pulse-slow {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
 }
 
 .splash-date {
     font-family: 'Cinzel', serif;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 16px;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 18px;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
     animation: fadeInUp 1s ease forwards;
     opacity: 0;
 }
@@ -79,9 +127,9 @@ body {
 .splash-title {
     font-family: 'Cinzel', serif;
     color: var(--accent-color);
-    margin: 0 0 20px 0;
-    font-size: 32px;
-    text-shadow: 0 0 20px rgba(226, 192, 122, 0.3);
+    margin: 0 0 30px 0;
+    font-size: 36px;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
     animation: fadeInUp 1s ease forwards 0.3s;
     opacity: 0;
 }
@@ -89,27 +137,28 @@ body {
 .splash-members {
     font-family: 'Great Vibes', cursive;
     color: #ffffff;
-    font-size: 28px;
-    line-height: 1.5;
+    font-size: 32px;
+    line-height: 1.6;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 15px;
+    gap: 20px;
     animation: fadeInUp 1s ease forwards 0.8s;
     opacity: 0;
 }
 
 .splash-members span {
     display: inline-block;
-    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    text-shadow: 0 0 15px rgba(255,255,255,0.8);
 }
 
 .loading-bar {
     width: 0%;
-    height: 2px;
-    background-color: var(--accent-color);
-    margin: 30px auto 0;
+    height: 3px;
+    background: linear-gradient(to right, transparent, var(--accent-color), transparent);
+    margin: 40px auto 0;
     animation: loadProgress 2.5s ease-in-out forwards;
+    border-radius: 2px;
 }
 
 @keyframes fadeInUp {
@@ -119,49 +168,58 @@ body {
 
 @keyframes loadProgress {
     0% { width: 0%; opacity: 1; }
-    80% { width: 50%; opacity: 1; }
+    80% { width: 60%; opacity: 1; }
     100% { width: 100%; opacity: 0; }
 }
 
 /* ヘッダー */
 .app-header {
     text-align: center;
-    padding: 20px 0;
-    background: linear-gradient(to bottom, #050c18, #0a1930);
+    padding: 25px 0;
+    /* ガラス風ヘッダー */
+    background: rgba(15, 12, 41, 0.7);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 101;
 }
 
 .app-header h1 {
     font-family: 'Cinzel', serif;
     margin: 0;
-    font-size: 24px;
+    font-size: 26px;
     color: var(--accent-color);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 
 .subtitle {
     font-family: 'Cinzel', serif;
     margin: 5px 0 0;
     font-size: 14px;
-    opacity: 0.8;
+    opacity: 0.9;
+    letter-spacing: 1px;
 }
 
 #realtime-clock {
     font-family: 'Cinzel', serif;
-    font-size: 16px;
-    color: var(--text-color);
-    margin-top: 8px;
-    background: rgba(255,255,255,0.1);
+    font-size: 18px;
+    color: #fff;
+    margin-top: 10px;
+    background: rgba(255,255,255,0.15);
     display: inline-block;
-    padding: 2px 12px;
-    border-radius: 12px;
-    letter-spacing: 1px;
+    padding: 4px 15px;
+    border-radius: 20px;
+    letter-spacing: 2px;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 /* タブメニュー */
 .tab-menu {
     display: flex;
     justify-content: center;
-    background-color: #0a1930;
+    background: rgba(15, 12, 41, 0.8);
+    backdrop-filter: blur(10px);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -173,17 +231,29 @@ body {
 .tab-btn {
     background: none;
     border: none;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.6);
     font-size: 16px;
-    padding: 10px 20px;
+    padding: 10px 25px;
     font-family: 'Cinzel', serif;
     cursor: pointer;
     transition: 0.3s;
+    position: relative;
 }
 
 .tab-btn.active {
     color: var(--accent-color);
-    border-bottom: 2px solid var(--accent-color);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 20%;
+    width: 60%;
+    height: 2px;
+    background-color: var(--accent-color);
+    box-shadow: 0 0 10px var(--accent-color);
 }
 
 /* コンテンツエリア */
@@ -199,11 +269,13 @@ body {
 .section-title {
     font-family: 'Cinzel', serif;
     text-align: center;
-    border-bottom: 1px solid var(--accent-color);
+    border-bottom: 1px solid rgba(255, 215, 0, 0.3);
     display: inline-block;
-    margin: 0 auto 20px;
-    padding-bottom: 5px;
+    margin: 10px auto 30px;
+    padding-bottom: 10px;
     width: 100%;
+    font-size: 20px;
+    letter-spacing: 2px;
 }
 
 .scroll-trigger {
@@ -221,66 +293,77 @@ body {
 .timeline {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px; /* 間隔を少し広げて優雅に */
 }
 
+/* ▼▼▼ カードのガラスデザイン化 ▼▼▼ */
 .time-card {
-    background-color: var(--card-bg);
-    border-radius: 12px;
-    padding: 15px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: var(--glass-border);
+    border-radius: 16px;
+    padding: 20px;
     display: flex;
     align-items: center;
     gap: 15px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    border-left: 4px solid transparent;
+    box-shadow: var(--glass-shadow);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     cursor: pointer;
+    overflow: hidden; /* 光のエフェクト用 */
+}
+
+/* カードにうっすら光沢を入れる */
+.time-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: 0.5s;
 }
 
 .time-card:active {
-    transform: scale(0.95) !important;
+    transform: scale(0.96) !important;
 }
 
 .time-card.past {
     opacity: 0.5;
-    filter: grayscale(80%);
+    filter: grayscale(60%);
+    background: rgba(0, 0, 0, 0.3);
 }
 
-/* ▼▼▼ 現在のカードの呼吸アニメーション ▼▼▼ */
+/* ▼▼▼ 現在のカード（豪華版） ▼▼▼ */
 .time-card.current {
-    border: 2px solid var(--accent-color);
-    box-shadow: 0 0 20px rgba(226, 192, 122, 0.6);
-    transform: scale(1.02);
+    border: 1px solid var(--accent-color);
+    background: rgba(255, 215, 0, 0.1); /* ゴールドの薄い背景 */
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.2);
+    transform: scale(1.03);
     z-index: 10;
-    animation: pulse-glow 2s infinite ease-in-out;
+    animation: pulse-glow 3s infinite ease-in-out;
 }
 
 @keyframes pulse-glow {
-    0% { box-shadow: 0 0 15px rgba(226, 192, 122, 0.4); }
-    50% { box-shadow: 0 0 30px rgba(226, 192, 122, 0.8); border-color: #fff; }
-    100% { box-shadow: 0 0 15px rgba(226, 192, 122, 0.4); }
+    0% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
+    50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); }
+    100% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
 }
-/* ▲▲▲ ここまで ▲▲▲ */
 
 .time-card.completed {
-    opacity: 0.4;
-    filter: grayscale(100%);
-    background-color: #0d1b2e;
+    opacity: 0.6;
+    background-color: rgba(0, 0, 0, 0.5);
     text-decoration: line-through;
-    animation: flash 0.5s ease;
-}
-
-@keyframes flash {
-    0% { background-color: var(--success-color); opacity: 1; filter: none; }
-    100% { background-color: #0d1b2e; opacity: 0.4; }
+    border: 1px solid rgba(46, 204, 113, 0.3);
 }
 
 .time-card.completed::after {
     content: '✔';
     position: absolute;
-    top: -10px;
-    right: -5px;
+    top: 10px;
+    right: 10px;
     background-color: var(--success-color);
     color: white;
     width: 24px;
@@ -301,35 +384,37 @@ body {
 }
 
 .time-card.warning {
-    border-left-color: var(--warning-color);
-    background: linear-gradient(90deg, rgba(255, 71, 87, 0.1), transparent);
+    border-left: 4px solid var(--warning-color);
+    background: linear-gradient(90deg, rgba(255, 107, 129, 0.15), rgba(255,255,255,0.05));
 }
 
 .time-card.highlight {
-    border-left-color: var(--accent-color);
+    border-left: 4px solid var(--accent-color);
 }
 
 .time-card.food {
-    border-left-color: #2ecc71;
+    border-left: 4px solid var(--success-color);
 }
 
 .time {
     font-family: 'Cinzel', serif;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 20px;
     color: var(--accent-color);
-    min-width: 60px;
+    min-width: 65px;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
 .event {
     font-weight: bold;
-    font-size: 15px;
+    font-size: 16px;
     flex-grow: 1;
+    letter-spacing: 0.5px;
 }
 
 .note {
     font-size: 12px;
-    color: #aaa;
+    color: rgba(255,255,255,0.7);
     margin-top: 5px;
     display: block;
     width: 100%;
@@ -339,10 +424,11 @@ body {
     background-color: var(--warning-color);
     color: white;
     font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 3px 8px;
+    border-radius: 20px;
     margin-left: 5px;
     vertical-align: middle;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
 .time-card.warning {
@@ -353,15 +439,17 @@ body {
 .map-container {
     text-align: center;
     margin-bottom: 30px;
-    background: rgba(255,255,255,0.05);
-    padding: 10px;
-    border-radius: 12px;
-    overflow: hidden;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    padding: 15px;
+    border-radius: 16px;
+    border: var(--glass-border);
+    box-shadow: var(--glass-shadow);
 }
 
 .map-note {
     font-size: 12px;
-    color: #ccc;
+    color: rgba(255,255,255,0.7);
     margin: 0 0 10px 0;
 }
 
@@ -375,22 +463,22 @@ body {
 
 .official-btn {
     display: inline-block;
-    background-color: var(--accent-color);
-    color: var(--bg-color);
+    background: linear-gradient(45deg, #FFD700, #FDB931);
+    color: #333;
     text-decoration: none;
-    padding: 12px 25px;
+    padding: 12px 30px;
     border-radius: 30px;
     font-weight: bold;
-    margin-top: 10px;
-    box-shadow: 0 4px 10px rgba(226, 192, 122, 0.3);
+    margin-top: 15px;
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
     transition: transform 0.2s;
+    font-family: 'Cinzel', serif;
 }
 
 .official-btn.small-btn {
     font-size: 12px;
-    padding: 8px 15px;
-    margin-top: 15px;
-    background-color: transparent;
+    padding: 8px 20px;
+    background: transparent;
     border: 1px solid var(--accent-color);
     color: var(--accent-color);
     box-shadow: none;
@@ -404,54 +492,61 @@ body {
     font-family: 'Cinzel', serif;
     color: var(--text-color);
     border-left: 4px solid var(--accent-color);
-    padding-left: 10px;
-    margin-bottom: 15px;
+    padding-left: 15px;
+    margin-bottom: 20px;
+    font-size: 22px;
 }
 
 .food-list {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
 }
 
 .food-card {
-    background-color: var(--card-bg);
-    border-radius: 12px;
-    padding: 15px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    border: var(--glass-border);
+    border-radius: 16px;
+    padding: 20px;
     display: flex;
     align-items: center;
     gap: 15px;
-    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: var(--glass-shadow);
 }
 
 .food-card.shopping {
     border: 1px solid rgba(255, 100, 100, 0.3);
+    background: rgba(255, 100, 100, 0.05);
 }
 
 .food-icon {
     font-size: 30px;
-    background: rgba(0,0,0,0.2);
-    width: 50px;
-    height: 50px;
+    background: rgba(255,255,255,0.1);
+    width: 55px;
+    height: 55px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 .food-info h4 {
     margin: 0 0 5px 0;
     color: var(--accent-color);
-    font-size: 16px;
+    font-size: 18px;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
 .time-badge {
     display: inline-block;
     background-color: rgba(255,255,255,0.1);
     font-size: 12px;
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 3px 10px;
+    border-radius: 15px;
     margin: 0 0 5px 0;
+    border: 1px solid rgba(255,255,255,0.2);
 }
 
 .desc {
@@ -463,34 +558,38 @@ body {
 /* フッター */
 .app-footer {
     text-align: center;
-    margin-top: 50px;
-    padding: 30px 10px 50px;
+    margin-top: 60px;
+    padding: 40px 10px 60px;
+    /* ガラス風フッター */
+    background: rgba(0, 0, 0, 0.2);
     border-top: 1px solid rgba(255,255,255,0.05);
 }
 
 .footer-title {
     font-family: 'Cinzel', serif;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.6);
     font-size: 14px;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
 }
 
 .footer-members {
     font-family: 'Great Vibes', cursive;
-    font-size: 24px;
+    font-size: 28px;
     color: var(--accent-color);
     margin-bottom: 20px;
     line-height: 1.6;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 }
 
 .footer-members span {
     display: inline-block;
-    margin: 0 5px;
+    margin: 0 8px;
 }
 
 .copyright {
     font-family: 'Cinzel', serif;
     font-size: 10px;
-    opacity: 0.4;
+    opacity: 0.5;
+    letter-spacing: 1px;
 }

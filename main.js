@@ -111,24 +111,28 @@ function loadCompletionStatus() {
     }
 }
 
-/* --- ▼▼▼ 新機能：タップで魔法の粉（キラキラ）演出 ▼▼▼ --- */
+/* --- ▼▼▼ 新機能：カラフルな魔法の粉（キラキラ）演出 ▼▼▼ --- */
 function createSparkle(x, y) {
     const sparkle = document.createElement('div');
     sparkle.classList.add('sparkle');
     sparkle.style.left = `${x}px`;
     sparkle.style.top = `${y}px`;
     
-    // ランダムな大きさと色
-    const size = Math.random() * 5 + 3; // 3px〜8px
+    // ランダムな大きさと色（夢の国カラー）
+    const size = Math.random() * 6 + 4; // 4px〜10px
     sparkle.style.width = `${size}px`;
     sparkle.style.height = `${size}px`;
     
+    const colors = ['#FFD700', '#FFFFFF', '#87CEFA', '#FFB6C1', '#E6E6FA']; // 金, 白, 水色, ピンク, ラベンダー
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    sparkle.style.backgroundColor = randomColor;
+    sparkle.style.boxShadow = `0 0 10px ${randomColor}`;
+
     document.body.appendChild(sparkle);
 
-    // アニメーションが終わったら要素を消す
     setTimeout(() => {
         sparkle.remove();
-    }, 800);
+    }, 1000);
 }
 /* --- ▲▲▲ ここまで ▲▲▲ --- */
 
@@ -142,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
             splash.classList.add('hidden');
             setTimeout(() => {
                 splash.style.display = 'none';
-            }, 800);
+            }, 1000);
         }
     }, 3000);
 
@@ -171,13 +175,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* --- ▼▼▼ キラキライベントの登録 ▼▼▼ --- */
     document.addEventListener('click', (e) => {
-        // カードのクリックと被っても大丈夫なように軽めに
         createSparkle(e.pageX, e.pageY);
-        // 少しずらしてもう一個出すとリッチになる
-        setTimeout(() => createSparkle(e.pageX + (Math.random()*20-10), e.pageY + (Math.random()*20-10)), 50);
-        setTimeout(() => createSparkle(e.pageX + (Math.random()*20-10), e.pageY + (Math.random()*20-10)), 100);
+        setTimeout(() => createSparkle(e.pageX + (Math.random()*30-15), e.pageY + (Math.random()*30-15)), 100);
     });
-    /* --- ▲▲▲ ここまで ▲▲▲ --- */
 });
 
 /* --- 最後の魔法：隠し花火機能 --- */
