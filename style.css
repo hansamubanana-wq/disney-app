@@ -5,6 +5,7 @@
     --accent-color: #e2c07a;
     --card-bg: #162a47;
     --warning-color: #ff4757;
+    --success-color: #2ecc71; /* 完了用の緑色 */
 }
 
 body {
@@ -14,6 +15,8 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     padding-bottom: 50px;
+    /* タップ時のハイライトを無効化（スマホ用） */
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* ヘッダー */
@@ -108,10 +111,12 @@ body {
     gap: 15px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     border-left: 4px solid transparent;
-    transition: all 0.3s; /* アニメーション用 */
+    transition: all 0.3s;
+    position: relative; /* チェックマーク配置用 */
+    cursor: pointer; /* クリックできることを示す */
 }
 
-/* 時間経過時のスタイル（追加） */
+/* 時間経過時のスタイル */
 .time-card.past {
     opacity: 0.5;
     filter: grayscale(80%);
@@ -122,6 +127,34 @@ body {
     box-shadow: 0 0 15px rgba(226, 192, 122, 0.5);
     transform: scale(1.02);
 }
+
+/* ▼▼▼ 追加：完了（Completed）スタイル ▼▼▼ */
+.time-card.completed {
+    opacity: 0.4;
+    filter: grayscale(100%);
+    background-color: #0d1b2e;
+    text-decoration: line-through; /* 取り消し線 */
+}
+
+/* 完了マーク（チェックアイコン） */
+.time-card.completed::after {
+    content: '✔';
+    position: absolute;
+    top: -10px;
+    right: -5px;
+    background-color: var(--success-color);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 24px;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    text-decoration: none; /* チェックマークには線を出さない */
+}
+/* ▲▲▲ ここまで追加 ▲▲▲ */
+
 
 /* カードの装飾 */
 .time-card.warning {
